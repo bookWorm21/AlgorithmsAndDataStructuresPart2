@@ -3,14 +3,18 @@ using System.Collections.Generic;
 
 namespace AlgorithmsDataStructures2
 {
-    public class BSTNode<T>
+    public abstract class BSTNode
     {
         public int NodeKey;
+        public BSTNode Parent;
+        public BSTNode LeftChild;
+        public BSTNode RightChild;
+    }
+
+    public class BSTNode<T> : BSTNode
+    {
         public T NodeValue;
-        public BSTNode<T> Parent;
-        public BSTNode<T> LeftChild;
-        public BSTNode<T> RightChild;
-	
+
         public BSTNode(int key, T val, BSTNode<T> parent)
         {
             NodeKey = key;
@@ -20,13 +24,13 @@ namespace AlgorithmsDataStructures2
             RightChild = null;
         }
     }
-    
+
     public class BSTFind<T>
     {
         public BSTNode<T> Node;
-        
+
         public bool NodeHasKey;
-        
+
         public bool ToLeft;
 
         public BSTFind()
@@ -38,12 +42,12 @@ namespace AlgorithmsDataStructures2
     public class BST<T>
     {
         BSTNode<T> Root;
-	
+
         public BST(BSTNode<T> node)
         {
             Root = node;
         }
-	
+
         public BSTFind<T> FindNodeByKey(int key)
         {
             if (Root == null)
@@ -64,18 +68,18 @@ namespace AlgorithmsDataStructures2
                 }
 
                 if (key < node.NodeKey && node.LeftChild != null)
-                    return FindNode(node.LeftChild);
+                    return FindNode((BSTNode<T>) node.LeftChild);
 
                 if (key < node.NodeKey && node.LeftChild == null)
                     return new BSTFind<T>
                     {
                         Node = node,
-                        NodeHasKey =  false,
-                        ToLeft =  true
+                        NodeHasKey = false,
+                        ToLeft = true
                     };
 
                 if (key > node.NodeKey && node.RightChild != null)
-                    return FindNode(node.RightChild);
+                    return FindNode((BSTNode<T>) node.RightChild);
 
                 if (key > node.NodeKey && node.RightChild == null)
                     return new BSTFind<T>
@@ -99,7 +103,7 @@ namespace AlgorithmsDataStructures2
                 Root = addNode;
                 return true;
             }
-            
+
             if (finded.NodeHasKey)
             {
                 return false;
@@ -118,7 +122,7 @@ namespace AlgorithmsDataStructures2
 
             return true;
         }
-        
+
         public bool AddKeyValue(int key, T val)
         {
             var finded = FindNodeByKey(key);
@@ -128,7 +132,7 @@ namespace AlgorithmsDataStructures2
                 Root = new BSTNode<T>(key, val, null);
                 return true;
             }
-            
+
             if (finded.NodeHasKey)
             {
                 return false;
@@ -145,26 +149,26 @@ namespace AlgorithmsDataStructures2
 
             return true;
         }
-	
+
         public BSTNode<T> FinMinMax(BSTNode<T> FromNode, bool FindMax)
         {
             return FindMax ? FindMaxNode(FromNode) : FindMinNode(FromNode);
 
-            BSTNode<T> FindMaxNode(BSTNode<T> node)
+            BSTNode<T> FindMaxNode(BSTNode node)
             {
                 if (node == null)
                     return null;
-                
+
                 while (true)
                 {
                     if (node.RightChild == null)
-                        return node;
+                        return (BSTNode<T>) node;
 
                     node = node.RightChild;
                 }
             }
 
-            BSTNode<T> FindMinNode(BSTNode<T> node)
+            BSTNode<T> FindMinNode(BSTNode node)
             {
                 if (node == null)
                     return null;
@@ -172,13 +176,13 @@ namespace AlgorithmsDataStructures2
                 while (true)
                 {
                     if (node.LeftChild == null)
-                        return node;
+                        return (BSTNode<T>) node;
 
                     node = node.LeftChild;
                 }
             }
         }
-	
+
         public bool DeleteNodeByKey(int key)
         {
             var finded = FindNodeByKey(key);
@@ -218,7 +222,7 @@ namespace AlgorithmsDataStructures2
             {
                 finded.Node.RightChild.Parent = finded.Node.Parent;
                 finded.Node.Parent.RightChild = finded.Node.RightChild;
-                
+
                 return true;
             }
 
@@ -234,12 +238,12 @@ namespace AlgorithmsDataStructures2
             {
                 finded.Node.LeftChild.Parent = finded.Node.Parent;
                 finded.Node.Parent.RightChild = finded.Node.LeftChild;
-                
+
                 return true;
             }
 
-            var minOnRight = FinMinMax(finded.Node.RightChild, false);
-            
+            var minOnRight = FinMinMax((BSTNode<T>) finded.Node.RightChild, false);
+
             if (finded.ToLeft)
             {
                 finded.Node.Parent.LeftChild = minOnRight;
@@ -257,7 +261,7 @@ namespace AlgorithmsDataStructures2
             {
                 minOnRight.Parent.RightChild = null;
             }
-            
+
             minOnRight.Parent = finded.Node.Parent;
             minOnRight.LeftChild = finded.Node.LeftChild;
             minOnRight.RightChild = finded.Node.RightChild;
@@ -273,7 +277,7 @@ namespace AlgorithmsDataStructures2
             RecursiveCounting(Root);
             return count;
 
-            void RecursiveCounting(BSTNode<T> node)
+            void RecursiveCounting(BSTNode node)
             {
                 if (node == null)
                     return;
@@ -282,6 +286,75 @@ namespace AlgorithmsDataStructures2
 
                 RecursiveCounting(node.LeftChild);
                 RecursiveCounting(node.RightChild);
+            }
+        }
+        
+        public List<BSTNode> WideAllNodes()
+        {
+            var result = new List<BSTNode>();
+
+            if (Root == null)
+            {
+                return result;
+            }
+
+            var queue = new Queue<BSTNode>();
+            queue.Enqueue(Root);
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                result.Add(current);
+
+                if (current.LeftChild != null)
+                {
+                    queue.Enqueue(current.LeftChild);
+                }
+
+                if (current.RightChild != null)
+                {
+                    queue.Enqueue(current.RightChild);
+                }
+            }
+            
+            return result;
+        }
+        
+        /// <summary>
+        /// 0 - in-order (left leaves first),
+        /// 1 - post-order (bottom leaves first, root - last),
+        /// 2 - pre-order (root-first, bottom leaves last)
+        /// </summary>
+        /// <returns></returns>
+        public List<BSTNode> DeepAllNodes(int order)
+        {
+            var result = new List<BSTNode>();
+            RecursiveDeep(Root);
+            return result;
+            
+            void RecursiveDeep(BSTNode node)
+            {
+                if (node == null)
+                    return;
+
+                if (order == 2)
+                {
+                    result.Add(node);
+                }
+                
+                RecursiveDeep(node.LeftChild);
+
+                if (order == 0)
+                {
+                    result.Add(node);
+                }
+                
+                RecursiveDeep(node.RightChild);
+
+                if (order == 1)
+                {
+                    result.Add(node);
+                }
             }
         }
     }

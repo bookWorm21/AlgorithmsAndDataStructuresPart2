@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AlgorithmsDataStructures2;
 
 namespace UnitTests.Structures.Trees
@@ -58,38 +60,12 @@ namespace UnitTests.Structures.Trees
             Assert.AreEqual(node2, tree.FinMinMax(node2, false));
             Assert.AreEqual(node3, tree.FinMinMax(node1, true));
         }
+        
 
-        [TestMethod]
-        public void FindNodeByKeyCornel()
-        {
-            var root = new BSTNode<int>(5, 8, null);
-
-            var tree = new BST<int>(null);
-
-            var finded = tree.FindNodeByKey(5);
-            
-            Assert.IsTrue(finded.Node == null);
-            Assert.IsFalse(finded.NodeHasKey);
-
-            tree.AddNode(root);
-
-            finded = tree.FindNodeByKey(5);
-            Assert.IsTrue(finded.Node == root);
-            Assert.IsTrue(finded.NodeHasKey);
-
-            finded = tree.FindNodeByKey(8);
-
-            Assert.IsTrue(finded.Node == root);
-            Assert.IsFalse(finded.NodeHasKey);
-            Assert.IsFalse(finded.ToLeft);
-
-            finded = tree.FindNodeByKey(4);
-
-            Assert.IsTrue(finded.Node == root);
-            Assert.IsFalse(finded.NodeHasKey);
-            Assert.IsTrue(finded.ToLeft);
-        }
-
+        //                     20 
+        //           10                  30
+        //         5    15         25          35
+        //        0 8  12 17      22 27       
         [TestMethod]
         public void DeleteNodeByKeyCornel()
         {
@@ -142,6 +118,145 @@ namespace UnitTests.Structures.Trees
             Assert.IsTrue(node15.LeftChild == null);
             Assert.IsTrue(node12.LeftChild == node5);
             Assert.IsTrue(node12.RightChild == node15);
+        }
+        
+        [TestMethod]
+        public void FindNodeByKeyCornel()
+        {
+            var root = new BSTNode<int>(5, 8, null);
+
+            var tree = new BST<int>(null);
+
+            var finded = tree.FindNodeByKey(5);
+            
+            Assert.IsTrue(finded.Node == null);
+            Assert.IsFalse(finded.NodeHasKey);
+
+            tree.AddNode(root);
+
+            finded = tree.FindNodeByKey(5);
+            Assert.IsTrue(finded.Node == root);
+            Assert.IsTrue(finded.NodeHasKey);
+
+            finded = tree.FindNodeByKey(8);
+
+            Assert.IsTrue(finded.Node == root);
+            Assert.IsFalse(finded.NodeHasKey);
+            Assert.IsFalse(finded.ToLeft);
+
+            finded = tree.FindNodeByKey(4);
+
+            Assert.IsTrue(finded.Node == root);
+            Assert.IsFalse(finded.NodeHasKey);
+            Assert.IsTrue(finded.ToLeft);
+        }
+
+        //                     20 
+        //           10                  30
+        //         5    15         25          35
+        //        0 8  12 17      22 27       
+        [TestMethod]
+        public void WideAllNodesTest()
+        {
+            var tree = new BST<int>(null);
+
+            Assert.AreEqual(false, tree.DeleteNodeByKey(5));
+            
+            var root20 = new BSTNode<int>(20, 8, null);
+            var node10 = new BSTNode<int>(10, 8, null);
+            var node30 = new BSTNode<int>(30, 8, null);
+            var node5 = new BSTNode<int>(5, 8, null);
+            var node15 = new BSTNode<int>(15, 8, null);
+            var node0 = new BSTNode<int>(0, 8, null);
+            var node8 = new BSTNode<int>(8, 8, null);
+            var node12 = new BSTNode<int>(12, 8, null);
+            var node17 = new BSTNode<int>(17, 8, null);
+            var node25 = new BSTNode<int>(25, 8, null);
+            var node22 = new BSTNode<int>(22, 8, null);
+            var node27 = new BSTNode<int>(27, 8, null);
+            var node35 = new BSTNode<int>(35, 8, null);
+            
+            tree.AddNode(root20);
+            tree.AddNode(node10);
+            tree.AddNode(node5);
+            tree.AddNode(node8);
+            tree.AddNode(node0);
+            tree.AddNode(node15);
+            tree.AddNode(node17);
+            tree.AddNode(node12);
+            tree.AddNode(node30);
+            tree.AddNode(node35);
+            tree.AddNode(node25);
+            tree.AddNode(node27);
+            tree.AddNode(node22);
+
+            var expected = new List<BSTNode>
+            {
+                root20, node10, node30, node5, node15, node25, node35, node0, node8, node12, node17, node22, node27
+            };
+
+            Assert.IsTrue(expected.SequenceEqual(tree.WideAllNodes()));
+        }
+        
+        //                     20 
+        //           10                  30
+        //         5    15         25          35
+        //        0 8  12 17      22 27       
+        [TestMethod]
+        public void DeepAllNodesTest()
+        {
+            var tree = new BST<int>(null);
+
+            Assert.AreEqual(false, tree.DeleteNodeByKey(5));
+            
+            var root20 = new BSTNode<int>(20, 8, null);
+            var node10 = new BSTNode<int>(10, 8, null);
+            var node30 = new BSTNode<int>(30, 8, null);
+            var node5 = new BSTNode<int>(5, 8, null);
+            var node15 = new BSTNode<int>(15, 8, null);
+            var node0 = new BSTNode<int>(0, 8, null);
+            var node8 = new BSTNode<int>(8, 8, null);
+            var node12 = new BSTNode<int>(12, 8, null);
+            var node17 = new BSTNode<int>(17, 8, null);
+            var node25 = new BSTNode<int>(25, 8, null);
+            var node22 = new BSTNode<int>(22, 8, null);
+            var node27 = new BSTNode<int>(27, 8, null);
+            var node35 = new BSTNode<int>(35, 8, null);
+            
+            tree.AddNode(root20);
+            tree.AddNode(node10);
+            tree.AddNode(node5);
+            tree.AddNode(node8);
+            tree.AddNode(node0);
+            tree.AddNode(node15);
+            tree.AddNode(node17);
+            tree.AddNode(node12);
+            tree.AddNode(node30);
+            tree.AddNode(node35);
+            tree.AddNode(node25);
+            tree.AddNode(node27);
+            tree.AddNode(node22);
+
+            var expectedInOrder = new List<BSTNode>
+            {
+                node0, node5, node8, node10, node12, node15, node17, root20, node22, node25, node27, node30, node35
+            };
+
+            Assert.IsTrue(expectedInOrder.SequenceEqual(tree.DeepAllNodes(0)));
+
+            var expectedPostOrder = new List<BSTNode>
+            {
+                node0, node8, node5, node12, node17, node15, node10, node22, node27, node25, node35, node30, root20
+            };
+            
+            Assert.IsTrue(expectedPostOrder.SequenceEqual(tree.DeepAllNodes(1)));
+
+            var expectedPreOrder = new List<BSTNode>
+            {
+                root20, node10, node5, node0, node8, node15, node12, node17, node30, node25, node22,node27, node35
+            };
+
+            Assert.IsTrue(expectedPreOrder.SequenceEqual(tree.DeepAllNodes(2)));
         }
     }
 }
