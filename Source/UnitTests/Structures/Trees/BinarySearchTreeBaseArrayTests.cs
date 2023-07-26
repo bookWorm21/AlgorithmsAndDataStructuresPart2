@@ -9,7 +9,7 @@ namespace UnitTests.Structures.Trees
         [TestMethod]
         public void FindKeyIndexCornel()
         {
-            var tree = new aBST(2);
+            var tree = new aBST(1);
 
             var finded = tree.FindKeyIndex(8);
 
@@ -48,7 +48,7 @@ namespace UnitTests.Structures.Trees
         [TestMethod]
         public void AddKeyCornel()
         {
-            var tree = new aBST(2);
+            var tree = new aBST(1);
 
             var addResult = tree.AddKey(20);
             Assert.AreEqual(0, addResult);

@@ -9,7 +9,7 @@ namespace AlgorithmsDataStructures2
 
         public aBST(int depth)
         {
-            var treeSize = (int)Math.Pow(2, depth) - 1;
+            var treeSize = (int)Math.Pow(2, depth+1) - 1;
             Tree = new int?[treeSize];
             for (var i = 0; i < treeSize; i++) 
                 Tree[i] = null;
