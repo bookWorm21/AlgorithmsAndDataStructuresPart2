@@ -3,25 +3,13 @@ using System.Collections.Generic;
 
 namespace AlgorithmsDataStructures2
 {
-    public abstract class BSTNode
-    {
-        public int NodeKey;
-        public BSTNode Parent;
-        public BSTNode LeftChild;
-        public BSTNode RightChild;
-    }
-
     public class BSTNode<T> : BSTNode
     {
         public T NodeValue;
 
-        public BSTNode(int key, T val, BSTNode<T> parent)
+        public BSTNode(int key, T val, BSTNode<T> parent) : base(key, parent)
         {
-            NodeKey = key;
             NodeValue = val;
-            Parent = parent;
-            LeftChild = null;
-            RightChild = null;
         }
     }
 

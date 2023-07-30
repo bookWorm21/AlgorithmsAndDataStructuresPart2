@@ -3,26 +3,64 @@ using System.Collections.Generic;
 
 namespace AlgorithmsDataStructures2
 {
-    public static class BalancedBST
+    public class BSTNode
     {
-        public static int[] GenerateBBSTArray(int[] a)
+        public int NodeKey;
+        public BSTNode Parent;
+        public BSTNode LeftChild;
+        public BSTNode RightChild;
+        public int Level;
+
+        public BSTNode(int key, BSTNode parent)
+        {
+            NodeKey = key;
+            Parent = parent;
+            LeftChild = null;
+            RightChild = null;
+        }
+    }
+    
+    public class BalancedBST
+    {
+        public BSTNode Root;
+	
+        public BalancedBST() 
+        { 
+            Root = null;
+        }
+		
+        public void GenerateTree(int[] a)
         {
             Array.Sort(a);
-            var result = new int[a.Length];
-            SetValues(0, result.Length - 1, 0);
-            return result;
-
-            void SetValues(int left, int right, int index)
+            Root = GenerateNode(0, a.Length - 1, null);
+            
+            BSTNode GenerateNode(int left, int right, BSTNode parent)
             {
                 if (left > right)
-                    return;
-                
-                var middle = left + (right - left) / 2;
-                result[index] = a[middle];
+                    return null;
 
-                SetValues(left, middle - 1, index * 2 + 1);
-                SetValues(middle + 1, right, index * 2 + 2);
+                var middle = left + (right - left) / 2;
+                var node = new BSTNode(a[middle], parent)
+                {
+                    Level = parent != null ? parent.Level + 1 : 0,
+                    Parent = parent
+                };
+                node.LeftChild = GenerateNode(left, middle - 1, node);
+                node.RightChild = GenerateNode(middle + 1, right, node);
+                return node;
             }
+        }
+
+        public bool IsBalanced(BSTNode root)
+        {
+            if (root == null)
+                return true;
+
+            if (!IsBalanced(root.LeftChild) || !IsBalanced(root.RightChild))
+                return false;
+
+            return Math.Abs((root.LeftChild?.Level ?? 0) -
+                            (root.RightChild?.Level ?? 0)) <= 1;
         }
     }
 }
