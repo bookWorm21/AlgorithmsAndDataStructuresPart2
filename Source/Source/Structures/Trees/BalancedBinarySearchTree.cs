@@ -57,7 +57,12 @@ namespace AlgorithmsDataStructures2
                 return true;
 
             if (!IsBalanced(root.LeftChild) || !IsBalanced(root.RightChild))
+            {
+                root.Level = Math.Max(root.LeftChild?.Level ?? 0, root.RightChild?.Level ?? 0) + 1;
                 return false;
+            }
+
+            root.Level = Math.Max(root.LeftChild?.Level ?? 0, root.RightChild?.Level ?? 0) + 1;
 
             return Math.Abs((root.LeftChild?.Level ?? 0) -
                             (root.RightChild?.Level ?? 0)) <= 1;

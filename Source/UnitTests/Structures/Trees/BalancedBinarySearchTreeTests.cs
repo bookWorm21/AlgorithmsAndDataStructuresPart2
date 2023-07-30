@@ -49,6 +49,27 @@ namespace UnitTests.Structures.Trees
             balancedTree.GenerateTree(treeElements);
 
             Assert.IsTrue(balancedTree.IsBalanced(balancedTree.Root));
+
+            var node = new BSTNode(20, null);
+            var left = new BSTNode(0, node);
+            var right = new BSTNode(40, node);
+
+            node.RightChild = right;
+
+            Assert.IsTrue(balancedTree.IsBalanced(right));
+            Assert.IsTrue(balancedTree.IsBalanced(node));
+
+            node.LeftChild = left;
+
+            Assert.IsTrue(balancedTree.IsBalanced(node));
+
+            var leftLeft = new BSTNode(-20, left);
+            var leftLeftLeft = new BSTNode(-40, leftLeft);
+
+            left.LeftChild = leftLeft;
+            leftLeft.LeftChild = leftLeftLeft;
+
+            Assert.IsFalse(balancedTree.IsBalanced(node));
         }
     }
 }
