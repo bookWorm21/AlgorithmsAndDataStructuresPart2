@@ -16,20 +16,12 @@ namespace AlgorithmsDataStructures2
 		
         public void MakeHeap(int[] a, int depth)
         {
-            Size = a.Length;
             var heapSize = (int)Math.Pow(2, depth + 1) - 1;
             HeapArray = new int[heapSize];
-            Array.Sort(a);
-            Array.Reverse(a);
 
-            for (var i = 0; i < a.Length; ++i)
+            foreach (var element in a)
             {
-                HeapArray[i] = a[i];
-            }
-
-            for (var i = a.Length; i < HeapArray.Length; ++i)
-            {
-                HeapArray[i] = -1;
+                Add(element);
             }
         }
 		
