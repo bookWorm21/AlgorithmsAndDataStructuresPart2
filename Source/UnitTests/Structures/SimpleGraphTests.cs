@@ -1,4 +1,5 @@
-﻿using AlgorithmsDataStructures2;
+﻿using System.Runtime.CompilerServices;
+using AlgorithmsDataStructures2;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests.Structures.Trees
@@ -34,6 +35,13 @@ namespace UnitTests.Structures.Trees
 
             Assert.IsTrue(graph.IsEdge(0, 1));
             Assert.IsFalse(graph.IsEdge(1, 2));
+
+            graph.AddEdge(1, 2);
+
+            graph.RemoveVertex(2);
+
+            Assert.IsFalse(graph.IsEdge(1, 2));
+            Assert.IsFalse(graph.IsEdge(0, 2));
         }
     }
 }

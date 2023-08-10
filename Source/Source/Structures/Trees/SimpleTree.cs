@@ -118,6 +118,35 @@ namespace AlgorithmsDataStructures2
                 }
             }
         }
+        
+        public List<T> EvenTrees()
+        {
+            var result = new List<T>();
+
+            if (Root == null)
+                return result;
+
+            ChildsCount(Root);
+
+            return result;
+
+            int ChildsCount(SimpleTreeNode<T> node)
+            {
+                var leafCount = 0;
+                foreach (var child in node.Children)
+                {
+                    var childLeafCount = ChildsCount(child);
+                    if ((childLeafCount + 1) % 2 == 0)
+                    {
+                        result.Add(node.NodeValue);
+                        result.Add(child.NodeValue);
+                    }
+                    leafCount += childLeafCount;
+                }
+                
+                return leafCount + node.Children.Count;
+            }
+        }
 
         public int LeafCount()
         {

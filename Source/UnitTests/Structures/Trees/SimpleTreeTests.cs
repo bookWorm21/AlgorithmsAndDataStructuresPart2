@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AlgorithmsDataStructures2;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -191,6 +192,45 @@ namespace UnitTests.Structures.Trees
             var tree = new SimpleTree<int>(null);
             Assert.AreEqual(null, tree.Root);
             Assert.AreEqual(0, tree.LeafCount());
+        }
+
+        [TestMethod]
+        public void EvenTreesTests()
+        {
+            var node1 = new SimpleTreeNode<int>(1, null);
+            
+            var node2 = new SimpleTreeNode<int>(2, node1);
+            var node3 = new SimpleTreeNode<int>(3, node1);
+            var node6 = new SimpleTreeNode<int>(6, node1);
+
+            node1.Children.Add(node2);
+            node1.Children.Add(node3);
+            node1.Children.Add(node6);
+
+            var node5 = new SimpleTreeNode<int>(5, node2);
+            var node7 = new SimpleTreeNode<int>(7, node2);
+
+            node2.Children.Add(node5);
+            node2.Children.Add(node7);
+
+            var node4 = new SimpleTreeNode<int>(4, node3);
+
+            node3.Children.Add(node4);
+
+            var node8 = new SimpleTreeNode<int>(8, node6);
+
+            node6.Children.Add(node8);
+
+            var node9 = new SimpleTreeNode<int>(9, node8);
+            var node10 = new SimpleTreeNode<int>(10, node8);
+
+            node8.Children.Add(node9);
+            node8.Children.Add(node10);
+
+            var tree = new SimpleTree<int>(node1);
+
+            var result = tree.EvenTrees();
+            Assert.IsTrue(new List<int> {1, 3, 1, 6}.SequenceEqual(result));
         }
     }
 }
