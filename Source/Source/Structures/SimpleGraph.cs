@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlgorithmsDataStructures2
 {
-    public class Vertex
+    public class Vertex<T> 
     {
-        public int Value;
-        public Vertex(int val)
+        public T Value;
+        public bool Hit;
+        
+        public Vertex(T val)
         {
             Value = val;
+            Hit = false;
         }
     }
   
-    public class SimpleGraph
+    public class SimpleGraph<T>
     {
-        public Vertex [] vertex;
+        public Vertex<T> [] vertex;
         public int [,] m_adjacency;
         public int max_vertex;
 
@@ -24,17 +28,17 @@ namespace AlgorithmsDataStructures2
         {
             max_vertex = size;
             m_adjacency = new int [size,size];
-            vertex = new Vertex [size];
+            vertex = new Vertex<T>[size];
         }
 	
-        public void AddVertex(int value)
+        public void AddVertex(T value)
         {
             if (FreeIndex >= max_vertex)
             {
                 return;
             }
 
-            vertex[FreeIndex] = new Vertex(value);
+            vertex[FreeIndex] = new Vertex<T>(value);
             ++FreeIndex;
         }
         
@@ -65,6 +69,50 @@ namespace AlgorithmsDataStructures2
         {
             m_adjacency[v1, v2] = 0;
             m_adjacency[v2, v1] = 0;
+        }
+        
+        public List<Vertex<T>> DepthFirstSearch(int VFrom, int VTo)
+        {
+            foreach (var vert in vertex)
+            {
+                vert.Hit = false;
+            }
+
+            var path = new Stack<int>();
+            var current = VFrom;
+            path.Push(current);
+
+            do
+            {
+                current = path.Peek();
+                vertex[current].Hit = true;
+
+                var haveNext = false;
+                for (int i = 0; i < max_vertex; ++i)
+                {
+                    if (m_adjacency[current, i] == 0 || vertex[i].Hit)
+                        continue;
+
+                    if (i == VTo)
+                    {
+                        path.Push(i);
+                        return path.Select(ind => vertex[ind]).Reverse().ToList();
+                    }
+
+                    current = i;
+                    haveNext = true;
+                    path.Push(current);
+                    break;
+                }
+
+                if (!haveNext && path.Count > 0)
+                {
+                    path.Pop();
+                }
+            } 
+            while (path.Count > 0);
+
+            return new List<Vertex<T>>();
         }
     }
 }
