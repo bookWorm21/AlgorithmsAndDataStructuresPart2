@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace AlgorithmsDataStructures2
@@ -8,7 +7,9 @@ namespace AlgorithmsDataStructures2
     {
         public T Value;
         public bool Hit;
-        
+
+        public Vertex<T> Prev;
+
         public Vertex(T val)
         {
             Value = val;
@@ -113,6 +114,56 @@ namespace AlgorithmsDataStructures2
             while (path.Count > 0);
 
             return new List<Vertex<T>>();
+        }
+
+        public List<Vertex<T>> BreadthFirstSearch(int VFrom, int VTo)
+        {
+            foreach (var vert in vertex)
+            {
+                vert.Hit = false;
+                vert.Prev = null;
+            }
+
+            var width = new Queue<int>();
+            vertex[VFrom].Hit = true;
+            width.Enqueue(VFrom);
+            var isFind = false;
+            
+            do
+            {
+                var current = width.Dequeue();
+                
+                for (var i = 0; i < max_vertex; ++i)
+                {
+                    if (m_adjacency[current, i] == 0 || vertex[i].Hit)
+                        continue;
+
+                    vertex[i].Hit = true;
+                    vertex[i].Prev = vertex[current];
+                    width.Enqueue(i);
+
+                    if (i == VTo)
+                    {
+                        isFind = true;
+                        break;
+                    }
+                }
+            } 
+            while (width.Count > 0 && !isFind);
+
+            if (vertex[VTo].Prev == null)
+                return new List<Vertex<T>>();
+            
+            var prev = vertex[VTo];
+            var path = new List<Vertex<T>>();
+            while (prev != null)
+            {
+                path.Add(prev);
+                prev = prev.Prev;
+            }
+
+            path.Reverse();
+            return path;
         }
     }
 }

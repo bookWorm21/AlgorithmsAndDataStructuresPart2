@@ -69,5 +69,30 @@ namespace UnitTests.Structures.Trees
             result = graph.DepthFirstSearch(0, 5).Select(ver => ver.Value);
             Assert.IsTrue(result.SequenceEqual(new List<int>()));
         }
+        
+        [TestMethod]
+        public void BreadthFirstSearchTests()
+        {
+            var graph = new SimpleGraph<int>(6);
+
+            graph.AddVertex(0);
+            graph.AddVertex(1);
+            graph.AddVertex(2);
+            graph.AddVertex(3);
+            graph.AddVertex(4);
+            graph.AddVertex(5);
+
+            graph.AddEdge(0, 3);
+            graph.AddEdge(1, 2);
+            graph.AddEdge(2, 3);
+            graph.AddEdge(3, 4);
+
+            var result = graph.BreadthFirstSearch(0, 4).Select(ver => ver.Value);
+            Assert.IsTrue(result
+                .SequenceEqual(new List<int>{0, 3, 4}));
+
+            result = graph.BreadthFirstSearch(0, 5).Select(ver => ver.Value);
+            Assert.IsTrue(result.SequenceEqual(new List<int>()));
+        }
     }
 }
