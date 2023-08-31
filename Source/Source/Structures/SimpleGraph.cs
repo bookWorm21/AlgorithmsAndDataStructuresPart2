@@ -7,6 +7,7 @@ namespace AlgorithmsDataStructures2
     {
         public T Value;
         public bool Hit;
+        public bool InTriangle;
 
         public Vertex<T> Prev;
 
@@ -16,11 +17,11 @@ namespace AlgorithmsDataStructures2
             Hit = false;
         }
     }
-  
+
     public class SimpleGraph<T>
     {
-        public Vertex<T> [] vertex;
-        public int [,] m_adjacency;
+        public Vertex<T>[] vertex;
+        public int[,] m_adjacency;
         public int max_vertex;
 
         public int FreeIndex { get; private set; }
@@ -28,10 +29,10 @@ namespace AlgorithmsDataStructures2
         public SimpleGraph(int size)
         {
             max_vertex = size;
-            m_adjacency = new int [size,size];
+            m_adjacency = new int [size, size];
             vertex = new Vertex<T>[size];
         }
-	
+
         public void AddVertex(T value)
         {
             if (FreeIndex >= max_vertex)
@@ -42,7 +43,7 @@ namespace AlgorithmsDataStructures2
             vertex[FreeIndex] = new Vertex<T>(value);
             ++FreeIndex;
         }
-        
+
         public void RemoveVertex(int v)
         {
             vertex[v] = null;
@@ -54,24 +55,24 @@ namespace AlgorithmsDataStructures2
 
             --FreeIndex;
         }
-	
+
         public bool IsEdge(int v1, int v2)
         {
             return m_adjacency[v1, v2] == 1;
         }
-	
+
         public void AddEdge(int v1, int v2)
         {
             m_adjacency[v1, v2] = 1;
             m_adjacency[v2, v1] = 1;
         }
-	
+
         public void RemoveEdge(int v1, int v2)
         {
             m_adjacency[v1, v2] = 0;
             m_adjacency[v2, v1] = 0;
         }
-        
+
         public List<Vertex<T>> DepthFirstSearch(int VFrom, int VTo)
         {
             foreach (var vert in vertex)
@@ -110,8 +111,7 @@ namespace AlgorithmsDataStructures2
                 {
                     path.Pop();
                 }
-            } 
-            while (path.Count > 0);
+            } while (path.Count > 0);
 
             return new List<Vertex<T>>();
         }
@@ -128,11 +128,11 @@ namespace AlgorithmsDataStructures2
             vertex[VFrom].Hit = true;
             width.Enqueue(VFrom);
             var isFind = false;
-            
+
             do
             {
                 var current = width.Dequeue();
-                
+
                 for (var i = 0; i < max_vertex; ++i)
                 {
                     if (m_adjacency[current, i] == 0 || vertex[i].Hit)
@@ -148,12 +148,11 @@ namespace AlgorithmsDataStructures2
                         break;
                     }
                 }
-            } 
-            while (width.Count > 0 && !isFind);
+            } while (width.Count > 0 && !isFind);
 
             if (vertex[VTo].Prev == null)
                 return new List<Vertex<T>>();
-            
+
             var prev = vertex[VTo];
             var path = new List<Vertex<T>>();
             while (prev != null)
@@ -164,6 +163,70 @@ namespace AlgorithmsDataStructures2
 
             path.Reverse();
             return path;
+        }
+
+        public List<Vertex<T>> WeakVertices()
+        {
+            var vertToNeigh = new Dictionary<int, List<int>>();
+            var result = new List<Vertex<T>>();
+            for (var i = 0; i < max_vertex; ++i)
+            {
+                vertex[i].Hit = false;
+                vertex[i].InTriangle = false;
+            }
+
+            for (var i = 0; i < max_vertex; ++i)
+            {
+                if (vertex[i].Hit)
+                    continue;
+
+                var currentNeighbours = GetNeighbours(i);
+                for (var j = 0; j < max_vertex; ++j)
+                {
+                    if (m_adjacency[i, j] == 0)
+                        continue;
+
+                    var neighbourNeighbours = GetNeighbours(j);
+                    var hasIntersect = currentNeighbours.Intersect(neighbourNeighbours).Any();
+
+                    if (hasIntersect)
+                    {
+                        vertex[i].InTriangle = true;
+
+                        vertex[j].InTriangle = true;
+                        vertex[j].Hit = true;
+                        break;
+                    }
+                }
+
+                vertex[i].Hit = true;
+            }
+
+            for (var i = 0; i < max_vertex; ++i)
+            {
+                if (!vertex[i].InTriangle)
+                {
+                    result.Add(vertex[i]);
+                }
+            }
+
+            return result;
+
+            List<int> GetNeighbours(int vertIndex)
+            {
+                if (vertToNeigh.TryGetValue(vertIndex, out var neighbours))
+                    return neighbours;
+
+                neighbours = new List<int>();
+                for (var k = 0; k < max_vertex; ++k)
+                {
+                    if (m_adjacency[vertIndex, k] != 0)
+                        neighbours.Add(k);
+                }
+
+                vertToNeigh[vertIndex] = neighbours;
+                return neighbours;
+            }
         }
     }
 }

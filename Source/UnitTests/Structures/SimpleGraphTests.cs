@@ -94,5 +94,42 @@ namespace UnitTests.Structures.Trees
             result = graph.BreadthFirstSearch(0, 5).Select(ver => ver.Value);
             Assert.IsTrue(result.SequenceEqual(new List<int>()));
         }
+
+        [TestMethod]
+        public void WeakVerticesTests()
+        {
+            var graph = new SimpleGraph<int>(9);
+
+            graph.AddVertex(0);
+            graph.AddVertex(1);
+            graph.AddVertex(2);
+            graph.AddVertex(3);
+            graph.AddVertex(4);
+            graph.AddVertex(5);
+            graph.AddVertex(6);
+            graph.AddVertex(7);
+            graph.AddVertex(8);
+
+            graph.AddEdge(0, 1);
+            graph.AddEdge(1, 3);
+            graph.AddEdge(1, 2);
+            graph.AddEdge(2, 3);
+            graph.AddEdge(2, 4);
+            graph.AddEdge(3, 4);
+            graph.AddEdge(3, 5);
+            graph.AddEdge(5, 6);
+            graph.AddEdge(5, 7);
+            graph.AddEdge(6, 7);
+            graph.AddEdge(7, 8);
+            graph.AddEdge(0, 5);
+
+            var actual = graph.WeakVertices()
+                .OrderBy(vert=>vert.Value)
+                .Select(vert => vert.Value)
+                .ToList();
+            var expected = new List<int> {0, 8};
+
+            Assert.IsTrue(actual.SequenceEqual(expected));
+        }
     }
 }
